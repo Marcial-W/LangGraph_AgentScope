@@ -4,18 +4,19 @@
 负责生成文案、图文、视频、互动帖等多模态内容
 """
 
-from agentscope.agent import Agent
-from agentscope.message import Message
+from agentscope.agent import AgentBase
+from agentscope.message import Msg
 from typing import Dict, List, Any
 import json
 import random
 
 
-class ContentAgent(Agent):
+class ContentAgent(AgentBase):
     """内容生成智能体 - 负责内容制作组的角色"""
     
-    def __init__(self, name: str = "content_agent", **kwargs):
-        super().__init__(name=name, **kwargs)
+    def __init__(self, name: str = "content_agent"):
+        super().__init__()
+        self.name = name
         self.content_templates = {
             "微博": {
                 "字数限制": 140,
@@ -31,7 +32,7 @@ class ContentAgent(Agent):
             }
         }
         
-    def reply(self, message: Message) -> Message:
+    async def reply(self, message: Msg) -> Msg:
         """处理内容生成请求"""
         content = message.content if isinstance(message.content, str) else str(message.content)
         
@@ -47,7 +48,7 @@ class ContentAgent(Agent):
         else:
             response = self._generate_multimodal_content(content)
             
-        return Message(
+        return Msg(
             role="assistant",
             name=self.name,
             content=response

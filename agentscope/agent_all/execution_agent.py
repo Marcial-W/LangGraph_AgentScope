@@ -4,19 +4,20 @@
 负责任务包分配至账号、按计划发布、互动执行
 """
 
-from agentscope.agent import Agent
-from agentscope.message import Message
+from agentscope.agent import AgentBase
+from agentscope.message import Msg
 from typing import Dict, List, Any, Optional
 from datetime import datetime, timedelta
 import json
 import random
 
 
-class ExecutionAgent(Agent):
+class ExecutionAgent(AgentBase):
     """调度执行智能体 - 负责调度组和账号执行组的角色"""
     
-    def __init__(self, name: str = "execution_agent", **kwargs):
-        super().__init__(name=name, **kwargs)
+    def __init__(self, name: str = "execution_agent"):
+        super().__init__()
+        self.name = name
         self.task_queue = []
         self.account_pool = {
             "主账号": ["品牌官方号", "企业蓝V号"],
@@ -25,7 +26,7 @@ class ExecutionAgent(Agent):
         }
         self.execution_history = []
         
-    def reply(self, message: Message) -> Message:
+    async def reply(self, message: Msg) -> Msg:
         """处理调度执行请求"""
         content = message.content if isinstance(message.content, str) else str(message.content)
         
@@ -41,7 +42,7 @@ class ExecutionAgent(Agent):
         else:
             response = self._dispatch_tasks(content)
             
-        return Message(
+        return Msg(
             role="assistant",
             name=self.name,
             content=response

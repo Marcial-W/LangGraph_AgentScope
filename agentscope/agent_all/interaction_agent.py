@@ -4,19 +4,20 @@
 专注于社区互动、评论、点赞、转发、私信等操作
 """
 
-from agentscope.agent import Agent
-from agentscope.message import Message
+from agentscope.agent import AgentBase
+from agentscope.message import Msg
 from typing import Dict, List, Any, Optional
 import json
 import random
 from datetime import datetime
 
 
-class InteractionAgent(Agent):
+class InteractionAgent(AgentBase):
     """互动智能体 - 专注社区互动操作"""
     
-    def __init__(self, name: str = "interaction_agent", **kwargs):
-        super().__init__(name=name, **kwargs)
+    def __init__(self, name: str = "interaction_agent"):
+        super().__init__()
+        self.name = name
         self.interaction_templates = self._load_interaction_templates()
         self.emotion_keywords = {
             "positive": ["喜欢", "赞", "棒", "支持", "期待", "真好", "优秀"],
@@ -25,7 +26,7 @@ class InteractionAgent(Agent):
         }
         self.interaction_history = []
         
-    def reply(self, message: Message) -> Message:
+    async def reply(self, message: Msg) -> Msg:
         """处理互动请求"""
         content = message.content if isinstance(message.content, str) else str(message.content)
         
@@ -43,7 +44,7 @@ class InteractionAgent(Agent):
         else:
             response = self._auto_interact(content)
             
-        return Message(
+        return Msg(
             role="assistant",
             name=self.name,
             content=response

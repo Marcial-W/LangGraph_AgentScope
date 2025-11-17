@@ -4,20 +4,21 @@
 负责制定话题、传播节奏、账号矩阵角色分配、目标指标设定等
 """
 
-from agentscope.agent import Agent
-from agentscope.message import Message
+from agentscope.agent import AgentBase
+from agentscope.message import Msg
 from typing import Dict, List, Any
 import json
 
 
-class StrategyAgent(Agent):
+class StrategyAgent(AgentBase):
     """策略生成智能体 - 担任策划组的角色"""
     
-    def __init__(self, name: str = "strategy_agent", **kwargs):
-        super().__init__(name=name, **kwargs)
+    def __init__(self, name: str = "strategy_agent"):
+        super().__init__()
+        self.name = name
         self.strategies = []
         
-    def reply(self, message: Message) -> Message:
+    async def reply(self, message: Msg) -> Msg:
         """处理策略生成请求"""
         content = message.content if isinstance(message.content, str) else str(message.content)
         
@@ -31,7 +32,7 @@ class StrategyAgent(Agent):
         else:
             response = self._generate_strategy(content)
             
-        return Message(
+        return Msg(
             role="assistant",
             name=self.name,
             content=response
