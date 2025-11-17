@@ -1,6 +1,6 @@
 ## LangGraph + AgentScope 内容营销多智能体系统（MVP）
 
-本项目在现有仓库上新增了可运行的最小演示（MVP），整合 LangGraph 工作流编排与 AgentScope 风格 Agents，并提供统一 LLM 适配、事件总线（MQ stub）、状态存储（内存 stub）、向量存储（内存实现）、监控收集（内存实现）以及 docker-compose 基础编排。
+本项目在现有仓库上新增了可运行的最小演示（MVP），主要整合 LangGraph 工作流编排与 AgentScope 风格 Agents，并提供统一 LLM 适配、事件总线（MQ stub）、状态存储（内存 stub）、向量存储（内存实现）、监控收集（内存实现）以及 docker-compose 基础编排。
 
 ### 目录结构（新增）
 - `orchestrator/`：工作流编排（`ContentMarketingFlow`）
