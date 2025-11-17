@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="VcsDirectoryMappings">
-    <mapping directory="$PROJECT_DIR$/.." vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/.." vcs="" />
     <mapping directory="$PROJECT_DIR$" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/agentscope" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/langgraph" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/agentscope" vcs="" />
+    <mapping directory="$PROJECT_DIR$/langgraph" vcs="" />
   </component>
 </project>

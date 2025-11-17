@@ -1,6 +1,9 @@
 services:
   redis:
     image: redis:7-alpine
+    environment:
+      EVENT_BUS: redis
+      REDIS_URL: redis://localhost:6379/0
     ports:
       - "6379:6379"
   postgres:
