@@ -1,9 +1,6 @@
 services:
   redis:
     image: redis:7-alpine
-    environment:
-      EVENT_BUS: redis
-      REDIS_URL: redis://localhost:6379/0
     ports:
       - "6379:6379"
   postgres:
@@ -26,10 +23,18 @@ services:
     image: prom/prometheus:latest
     ports:
       - "9090:9090"
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro
   grafana:
     image: grafana/grafana-oss:latest
     ports:
       - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+      - GF_USERS_ALLOW_SIGN_UP=false
+    volumes:
+      - grafana-storage:/var/lib/grafana
   langgraph-worker:
     image: python:3.11-slim
     working_dir: /app
@@ -38,9 +43,16 @@ services:
     command: ["python", "run_demo.py"]
     environment:
       - PYTHONUNBUFFERED=1
+      - EVENT_BUS=redis
+      - REDIS_URL=redis://redis:6379/0
+      - POSTGRES_DSN=postgresql://app:app@postgres:5432/appdb
+      - PROMETHEUS_HOST=0.0.0.0
+      - PROMETHEUS_PORT=9100
     depends_on:
       - redis
       - postgres
+    ports:
+      - "9100:9100"
   agentscope-workers:
     image: python:3.11-slim
     working_dir: /app
@@ -49,8 +61,17 @@ services:
     command: ["python", "run_demo.py"]
     environment:
       - PYTHONUNBUFFERED=1
+      - EVENT_BUS=redis
+      - REDIS_URL=redis://redis:6379/0
+      - POSTGRES_DSN=postgresql://app:app@postgres:5432/appdb
+      - PROMETHEUS_HOST=0.0.0.0
+      - PROMETHEUS_PORT=9101
     depends_on:
       - redis
       - postgres
+    ports:
+      - "9101:9101"
 
+volumes:
+  grafana-storage:
 

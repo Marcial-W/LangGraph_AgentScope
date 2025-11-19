@@ -1,11 +1,18 @@
 import asyncio
 import os
+import sys
 import uuid
 
 from orchestrator.content_marketing_flow import ContentMarketingFlow
+from storage.audit import AuditLog
+from storage.postgres import run_migrations
 from storage.state import TaskStore
 from mq.queue import InMemoryEventBus, RedisEventBus
 from monitoring.metrics import Metrics
+
+# Windows 事件循环兼容性修复
+if sys.platform == "win32":
+    asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
 
 
 def _make_event_bus():
@@ -16,10 +23,13 @@ def _make_event_bus():
 
 
 async def main() -> None:
+    await run_migrations()
     store = TaskStore()
     bus = _make_event_bus()
     metrics = Metrics()
+    audit = AuditLog()
     bus.subscribe(metrics.handle_event)
+    bus.subscribe(audit.record_event)
 
     flow = ContentMarketingFlow(store, bus)
     task = {
@@ -36,4 +46,3 @@ async def main() -> None:
 
 if __name__ == "__main__":
     asyncio.run(main())
-
